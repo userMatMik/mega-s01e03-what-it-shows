@@ -1,0 +1,63 @@
+---
+layout: runbook
+title: '#4471 · what the merged reports show'
+owner: support desk
+status: open
+reviewed: 2026-10-28
+signature: userMatMik
+---
+
+<script>
+  import ProblemTable from '#lib/kb/ProblemTable.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+</script>
+
+[#4471](/kb/incidents/4471) was merged by subject line ([decision 0001](/kb/decisions/0001-dedupe-by-subject))
+and marked known: one issue, one fix queued. Read by tenant, form and body, its reports are more than one
+problem. The queued parser fix closes only one of them.
+
+<Callout kind="warn">
+Not one issue. Each problem below has its own cause and needs its own ticket and fix.
+</Callout>
+
+## What #4471 holds
+
+<ProblemTable ticket={4471} />
+
+Counts are unique reports: the export lists some reports twice, and each id is counted once.
+
+## The problems
+
+### `parser`: dates read month first
+
+The shared parser reads every date month first. Our tenants all write the day first, so a booking for
+7 April comes out as 4 July. It reaches every tenant, through the app, by email and through the
+booking-v2 form. This is the bug #4471 was opened for, and the fix that is queued.
+
+### `hint`: booking-v3 tells people to type month first
+
+booking-v3 prints `MM/DD/YYYY` under its date field. People type what the hint says, month first, and
+the form then reads the date the tenant's way, day first. The date flips just like a `parser` report, but
+only on booking-v3 tenants and only through the form. Fixing the parser does not change the hint; the
+form has to print the tenant's own order.
+
+### `shift`: the booking lands one day off
+
+**Observed.** These reports are not a flip. The date moves by one day ("Tuesday 6 October showed as
+Monday"), bookings in one month come out a day off, the same meeting falls on different days in Lisbon
+and Toronto, and an invite arrives before its booking. A day/month swap cannot do that: it keeps the date
+or moves it to another month. The desk had already read these as a one-day move (`desk-notes.json`), but
+counted them under `parser` by tenant.
+
+**Not confirmed.** A time-zone or daylight-saving conversion of the invite would fit: different days in
+two cities, and a shift that only shows in some months. Nobody has checked the code yet. Look at how
+invite dates are converted between the tenant's and the recipient's time zone before calling it that.
+
+## How to read a report
+
+- Place a report by its tenant's locale and form and by what its body says, not by its subject.
+  The same subjects come in for every problem above.
+- Do not use the intake tag. It follows the reporter's browser, not the cause.
+
+<RenderStamp {signature} />
