@@ -33,6 +33,10 @@ export lists some reports twice), placed by tenant and channel, not by subject o
 
 <TicketSplit ticket={4471} tickets={{ flip: 1, shift: 3 }} />
 
+Tickets count reports as the ticket system exported them for #4471. The export comes in pages that
+overlap, so some reports are listed twice; each row is counted, and the report ids column counts each
+report once.
+
 ### Day/month flip: dates read month first
 
 Ticket: **#1**. The shared parser reads every date month first. Our tenants all write the day first,
