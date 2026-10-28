@@ -1,14 +1,15 @@
 <script lang="ts">
   import reports from '#lib/data/reports-4471.json';
   import notes from '#lib/data/desk-notes.json';
-  import { uniqueById, type Report } from '#lib/kb/causes';
+  import type { Report } from '#lib/kb/causes';
   import { tenantOf } from '#lib/kb/locales';
   import { groupByProblem } from '#lib/kb/problems';
 
   // `listUpTo`: print the report ids of any problem this small, so its ticket can cite them.
   let { ticket, listUpTo = 40 }: { ticket: number; listUpTo?: number } = $props();
 
-  const merged = $derived(uniqueById(reports as Report[]).filter((r) => r.mergedInto === ticket));
+  // Rows as exported: the desk counts every row its ticket system exported, a report exported twice included.
+  const merged = $derived((reports as Report[]).filter((r) => r.mergedInto === ticket));
   const groups = $derived(groupByProblem(merged, tenantOf, notes.oneDayMove));
   const tally = (n: Record<string, number>) =>
     Object.entries(n)
@@ -18,7 +19,7 @@
 </script>
 
 <p class="sum">
-  <strong>{merged.length}</strong> reports merged into #{ticket} ·
+  <strong>{merged.length}</strong> rows exported for #{ticket} ·
   <strong>{groups.length}</strong>
   {groups.length === 1 ? 'problem' : 'problems'}
 </p>
@@ -42,7 +43,7 @@
 
 {#each groups as g (g.problem)}
   {#if g.reports.length <= listUpTo}
-    <p class="ids"><code>{g.problem}</code>: {g.reports.map((r) => r.id).join(', ')}</p>
+    <p class="ids"><code>{g.problem}</code>: {[...new Set(g.reports.map((r) => r.id))].join(', ')}</p>
   {/if}
 {/each}
 

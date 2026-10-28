@@ -25,7 +25,8 @@ Not one issue. Each problem below has its own cause and needs its own ticket and
 
 <ProblemTable ticket={4471} />
 
-Counts are unique reports: the export lists some reports twice, and each id is counted once.
+Counts are rows as the ticket system exported them for #4471, the way the desk counts them. Some reports
+were exported twice, and each row is counted.
 
 ## The problems
 
