@@ -4,7 +4,7 @@ title: '#4471 · what the merged reports show'
 owner: support desk
 status: open
 reviewed: 2026-10-28
-signature: userMatMik
+signature: 'v1.eyJzdWIiOiIzMDA1IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTMyMTM5NjMsImV4cCI6MTc5MzMwMDM2M30.3c8s4T7YewBQ5rvUnBRw-D38V6-pHJec0oL7jwna8zo'
 ---
 
 <script>
