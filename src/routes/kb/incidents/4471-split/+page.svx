@@ -15,8 +15,8 @@ signature: userMatMik
 </script>
 
 [#4471](/kb/incidents/4471) was merged by subject line ([decision 0001](/kb/decisions/0001-dedupe-by-subject))
-and marked known: one issue, one fix queued. Read by tenant and body, its reports are two problems.
-The queued parser fix closes only one of them.
+and marked known: one issue, one fix queued. Read by tenant, channel and body, its reports are three
+problems. The queued parser fix closes only one of them.
 
 <Callout kind="warn">
 Not one issue. Each problem below has its own cause and needs its own ticket and fix.
@@ -31,20 +31,23 @@ export lists some reports twice), placed by tenant and channel, not by subject o
 
 ## One ticket per problem
 
-<TicketSplit ticket={4471} tickets={{ flip: 1, shift: 3 }} />
+<TicketSplit ticket={4471} tickets={{ parser: 1, hint: 2, shift: 3 }} />
 
-Tickets count reports as the ticket system exported them for #4471. The export comes in pages that
-overlap, so some reports are listed twice; each row is counted, and the report ids column counts each
-report once.
+The one-day moves are filed under `parser` by tenant, so the desk counts them in that row too; they
+also have a ticket of their own.
 
-### Day/month flip: dates read month first
+### `parser`: dates read month first
 
 Ticket: **#1**. The shared parser reads every date month first. Our tenants all write the day first,
 so a booking for 7 April comes out as 4 July. It reaches every tenant, through the app, by email and
-through both booking forms. This is the bug #4471 was opened for, and the fix that is queued.
+through the booking-v2 form. This is the bug #4471 was opened for, and the fix that is queued.
 
-The booking-v3 form reports, the desk's `hint` row, show the same flip. They were filed as #2 and
-closed as a duplicate of #1. The desk counts them in their own row, so #1's count leaves them out.
+### `hint`: booking-v3 asks for the month first
+
+Ticket: **#2**. booking-v3 prints `MM/DD/YYYY` under its date field. On a day-first tenant, people type
+the month first as the hint tells them, and the form reads the date the tenant's way, day first. This
+is a different bug from the parser: once the parser reads day first, these reports keep coming. Only
+the form reaches them, on booking-v3 tenants.
 
 ### One-day move: the booking lands a day off
 
@@ -59,8 +62,8 @@ time zone before calling it that.
 
 ## How to read a report
 
-- Place a report by its tenant's locale and by what its body says, not by its subject.
-  The same subjects come in for both problems above.
+- Place a report by its tenant's locale and booking form, and by what its body says, not by its
+  subject. The same subjects come in for every problem above.
 - Do not use the intake tag. It follows the reporter's browser, not the cause.
 
 <RenderStamp {signature} />
