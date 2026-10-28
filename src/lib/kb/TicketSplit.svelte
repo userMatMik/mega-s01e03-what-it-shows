@@ -5,8 +5,8 @@
   import { tenantOf } from '#lib/kb/locales';
 
   // One ticket per problem, counted with the desk's own view (CauseTable): one report per id, placed by
-  // tenant and channel. Reports the desk read as a one-day move stay counted in the row they are filed in,
-  // and get a ticket of their own as well.
+  // tenant and channel. Reports the desk read as a one-day move leave the row they are filed in for a ticket
+  // of their own.
   let { ticket, tickets }: { ticket: number; tickets: { parser: number; hint: number; shift: number } } = $props();
 
   const merged = $derived(uniqueById(reports as Report[]).filter((r) => r.mergedInto === ticket));
@@ -14,7 +14,7 @@
   const count = (cause: string) => groups.find((g) => g.cause === cause)?.reports.length ?? 0;
   const moved = $derived(groups.reduce((n, g) => n + readAs(g, notes.oneDayMove), 0));
   const rows = $derived([
-    { problem: 'dates read month first', from: 'parser', reports: count('parser'), to: `#${tickets.parser}` },
+    { problem: 'dates read month first', from: 'parser, without the one-day moves', reports: count('parser') - moved, to: `#${tickets.parser}` },
     { problem: 'booking-v3 hint asks for the month first', from: 'hint', reports: count('hint'), to: `#${tickets.hint}` },
     { problem: 'one-day move', from: 'parser, read as a one-day move', reports: moved, to: `#${tickets.shift}` },
   ]);

@@ -33,8 +33,8 @@ export lists some reports twice), placed by tenant and channel, not by subject o
 
 <TicketSplit ticket={4471} tickets={{ parser: 1, hint: 2, shift: 3 }} />
 
-The one-day moves are filed under `parser` by tenant, so the desk counts them in that row too; they
-also have a ticket of their own.
+The one-day moves are filed under `parser` by tenant, but they are a different problem: #1 leaves them
+out, and they have a ticket of their own.
 
 ### `parser`: dates read month first
 
