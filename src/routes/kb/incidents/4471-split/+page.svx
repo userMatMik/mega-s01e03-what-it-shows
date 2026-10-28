@@ -9,13 +9,14 @@ signature: userMatMik
 
 <script>
   import CauseTable from '#lib/kb/CauseTable.svelte';
+  import TicketSplit from '#lib/kb/TicketSplit.svelte';
   import RenderStamp from '#lib/kb/RenderStamp.svelte';
   import Callout from '#lib/kb/Callout.svelte';
 </script>
 
 [#4471](/kb/incidents/4471) was merged by subject line ([decision 0001](/kb/decisions/0001-dedupe-by-subject))
-and marked known: one issue, one fix queued. Placed by tenant and channel, its reports are two
-problems. The queued parser fix closes only one of them.
+and marked known: one issue, one fix queued. Read by tenant and body, its reports are two problems.
+The queued parser fix closes only one of them.
 
 <Callout kind="warn">
 Not one issue. Each problem below has its own cause and needs its own ticket and fix.
@@ -28,28 +29,33 @@ Not one issue. Each problem below has its own cause and needs its own ticket and
 Counted the desk's way, with the desk's own view as exported on 4 October: one report per id (the
 export lists some reports twice), placed by tenant and channel, not by subject or intake tag.
 
-## The problems
+## One ticket per problem
 
-### `parser`: dates read month first
+<TicketSplit ticket={4471} tickets={{ flip: 1, shift: 3 }} />
+
+### Day/month flip: dates read month first
 
 Ticket: **#1**. The shared parser reads every date month first. Our tenants all write the day first,
 so a booking for 7 April comes out as 4 July. It reaches every tenant, through the app, by email and
-through the booking-v2 form. This is the bug #4471 was opened for, and the fix that is queued.
+through both booking forms. This is the bug #4471 was opened for, and the fix that is queued.
 
-The reports the desk read as a one-day move are filed here by tenant and counted here, as the footnote
-under the table says. Their bodies show no day/month swap ("Tuesday 6 October showed as Monday", the same
-meeting on different days in Lisbon and Toronto). Check them again once the parser fix ships.
+The booking-v3 form reports, the desk's `hint` row, show the same flip. They were filed as #2 and
+closed as a duplicate of #1. The desk counts them in their own row, so #1's count leaves them out.
 
-### `hint`: booking-v3 asks for the month first
+### One-day move: the booking lands a day off
 
-Ticket: **#2**. booking-v3 prints `MM/DD/YYYY` under its date field. On a day-first tenant, people type
-the month first as the hint tells them, and the form reads the date the tenant's way, day first. The
-date comes out flipped, but the parser fix does not touch it: once the parser reads day first, these
-reports keep coming. Only the form reaches them, on booking-v3 tenants.
+Ticket: **#3**. These are the reports the desk read as a one-day move (`desk-notes.json`) but filed
+under `parser` by tenant. They are not a flip. The date moves by one day ("Tuesday 6 October showed
+as Monday"), the same meeting falls on different days in Lisbon and Toronto, and an invite arrives
+before its booking. A day/month swap cannot do that: it keeps the date or moves it to another month.
+
+**Not confirmed.** A time-zone or daylight-saving conversion of the invite would fit. Nobody has
+checked the code yet. Look at how invite dates are converted between the tenant's and the recipient's
+time zone before calling it that.
 
 ## How to read a report
 
-- Place a report by its tenant's locale and booking form, not by its subject.
+- Place a report by its tenant's locale and by what its body says, not by its subject.
   The same subjects come in for both problems above.
 - Do not use the intake tag. It follows the reporter's browser, not the cause.
 
